@@ -1,0 +1,6 @@
+zig-out/
+tmp/
+out/
+output/
+zig-cache/
+Zig/
