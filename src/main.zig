@@ -1,4 +1,5 @@
 const std = @import("std");
+const countFloors = @import("2015/day01.zig");
 
 pub fn main() !void {
     // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
