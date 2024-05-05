@@ -1,6 +1,6 @@
 const std = @import("std");
 const fs = std.fs;
-
+/// Read file from path. Returns the content of the file. Ensure to free the content to prevent memory leak.
 pub fn readFileContent(path: []const u8, allocator: *std.mem.Allocator) ![]const u8 {
     // _ = path;
     const dir = fs.cwd();
