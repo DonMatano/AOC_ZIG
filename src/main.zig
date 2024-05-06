@@ -1,8 +1,10 @@
 const std = @import("std");
 const countFloors = @import("2015/day01.zig");
+const checkWrap = @import("2015/day02.zig");
 
 pub fn main() !void {
-    try countFloors.countFloors();
+    // try countFloors.countFloors();
+    try checkWrap.run();
 }
 
 test "simple test" {
