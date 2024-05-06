@@ -76,9 +76,10 @@ fn calculateTotalRibbonWrap(dimension: Dimensions) usize {
     std.mem.sort(usize, &data, {}, comptime std.sort.asc(usize));
     const lowest = data[0];
     const second_lowest = data[1];
-    const total = (lowest * 2) + (second_lowest * 2);
-    debugPrint("total ribbon: {d}\n", .{total});
-    return total;
+    return (lowest * 2) + (second_lowest * 2);
+}
+fn calculateTotalBowWrap(dimension: Dimensions) usize {
+    return dimension.height * dimension.length * dimension.width;
 }
 
 const TestStruct = struct {
@@ -103,5 +104,14 @@ test "calculateTotalRibbonWrap" {
     };
     for (calculate_total_ribbon_wrap_tests) |t| {
         try expectToEqual(t.expect, calculateTotalRibbonWrap(t.input));
+    }
+}
+test "calculate Total Bow Wrap" {
+    const calculate_total_bow_wrap_tests = [_]TestStruct{
+        TestStruct{ .input = Dimensions{ .length = 2, .width = 3, .height = 4 }, .expect = 24 },
+        TestStruct{ .input = Dimensions{ .length = 1, .width = 1, .height = 10 }, .expect = 10 },
+    };
+    for (calculate_total_bow_wrap_tests) |t| {
+        try expectToEqual(t.expect, calculateTotalBowWrap(t.input));
     }
 }
