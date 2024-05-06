@@ -22,21 +22,24 @@ pub fn run() !void {
         arr.deinit();
     }
     var total_size: usize = 0;
+    var total_ribbon: usize = 0;
     while (true) {
         reader.streamUntilDelimiter(arr.writer(), '\n', null) catch |err| switch (err) {
             error.EndOfStream => {
                 const dimensions = try getDimensionFromString(arr.items);
-
                 total_size += calculateTotalWrapNeeded(dimensions);
+                total_ribbon += calculateTotalRibbonWrap(dimensions) + calculateTotalBowWrap(dimensions);
                 break;
             },
             else => return err,
         };
         const dimensions = try getDimensionFromString(arr.items);
         total_size += calculateTotalWrapNeeded(dimensions);
+        total_ribbon += calculateTotalRibbonWrap(dimensions) + calculateTotalBowWrap(dimensions);
         arr.clearRetainingCapacity();
     }
-    debugPrint("Total Size of wrapper needed: {d}", .{total_size});
+    debugPrint("Total Size of wrapper needed: {d}\n", .{total_size});
+    debugPrint("Total Size of ribbon needed: {d}\n", .{total_ribbon});
 }
 
 const DimensionError = error{GotNullNextError};
@@ -60,13 +63,6 @@ fn calculateTotalWrapNeeded(wrapperDimension: Dimensions) usize {
     const hl = wrapperDimension.height * wrapperDimension.length;
     const lowest_dimension = @min(lw, @min(hl, wh));
     total_wrap = (lw * 2) + (wh * 2) + (hl * 2) + lowest_dimension;
-    debugPrint("l: {d}, w: {d}, h: {d}\n", .{
-        wrapperDimension.length,
-        wrapperDimension.width,
-        wrapperDimension.height,
-    });
-    debugPrint("least dimenstion {d}\n", .{lowest_dimension});
-    debugPrint("totalWrap Needed {d}\n", .{total_wrap});
 
     return total_wrap;
 }
