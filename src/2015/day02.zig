@@ -58,31 +58,50 @@ fn calculateTotalWrapNeeded(wrapperDimension: Dimensions) usize {
     const lw = wrapperDimension.length * wrapperDimension.width;
     const wh = wrapperDimension.width * wrapperDimension.height;
     const hl = wrapperDimension.height * wrapperDimension.length;
-    var lowestDimension = if (lw < wh) lw else wh;
-    lowestDimension = if (hl < lowestDimension) hl else lowestDimension;
-    total_wrap = (lw * 2) + (wh * 2) + (hl * 2) + lowestDimension;
+    const lowest_dimension = @min(lw, @min(hl, wh));
+    total_wrap = (lw * 2) + (wh * 2) + (hl * 2) + lowest_dimension;
     debugPrint("l: {d}, w: {d}, h: {d}\n", .{
         wrapperDimension.length,
         wrapperDimension.width,
         wrapperDimension.height,
     });
-    debugPrint("least dimenstion {d}\n", .{lowestDimension});
+    debugPrint("least dimenstion {d}\n", .{lowest_dimension});
     debugPrint("totalWrap Needed {d}\n", .{total_wrap});
 
     return total_wrap;
 }
 
-test "day 2 calculateTotalWrapNeeded" {
-    const TestStruct = struct {
-        input: Dimensions,
-        expect: usize,
-    };
+fn calculateTotalRibbonWrap(dimension: Dimensions) usize {
+    var data = [3]usize{ dimension.height, dimension.width, dimension.length };
+    std.mem.sort(usize, &data, {}, comptime std.sort.asc(usize));
+    const lowest = data[0];
+    const second_lowest = data[1];
+    const total = (lowest * 2) + (second_lowest * 2);
+    debugPrint("total ribbon: {d}\n", .{total});
+    return total;
+}
 
-    const tests = [_]TestStruct{
+const TestStruct = struct {
+    input: Dimensions,
+    expect: usize,
+};
+
+test "day 2 calculateTotalWrapNeeded" {
+    const calculate_total_wrap_tests = [_]TestStruct{
         TestStruct{ .input = Dimensions{ .length = 2, .width = 3, .height = 4 }, .expect = 58 },
         TestStruct{ .input = Dimensions{ .length = 1, .width = 1, .height = 10 }, .expect = 43 },
     };
-    for (tests) |t| {
+    for (calculate_total_wrap_tests) |t| {
         try expectToEqual(t.expect, calculateTotalWrapNeeded(t.input));
+    }
+}
+
+test "calculateTotalRibbonWrap" {
+    const calculate_total_ribbon_wrap_tests = [_]TestStruct{
+        TestStruct{ .input = Dimensions{ .length = 2, .width = 3, .height = 4 }, .expect = 10 },
+        TestStruct{ .input = Dimensions{ .length = 1, .width = 1, .height = 10 }, .expect = 4 },
+    };
+    for (calculate_total_ribbon_wrap_tests) |t| {
+        try expectToEqual(t.expect, calculateTotalRibbonWrap(t.input));
     }
 }
